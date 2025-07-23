@@ -30,21 +30,27 @@ def converter_dados_para_dataframe(dados_matlab):
     # Remover chaves especiais do MATLAB
     chaves_para_remover = ['__header__', '__version__', '__globals__']
     dados_limpos = {k: v for k, v in dados_matlab.items() if k not in chaves_para_remover}
-    
-    # Se há apenas uma chave de dados, usar ela diretamente
-    if len(dados_limpos) == 1:
-        chave_dados = list(dados_limpos.keys())[0]
-        dados_array = dados_limpos[chave_dados]
-    else:
-        # Se há múltiplas chaves, tentar encontrar a que contém os dados principais
+
+    # NOVA LÓGICA: Priorizar canais DE_time, depois FE_time
+    chave_dados = None
+    for prioridade in ['DE_time', 'FE_time']:
+        for chave in dados_limpos.keys():
+            if prioridade in chave and isinstance(dados_limpos[chave], np.ndarray) and dados_limpos[chave].size > 0:
+                chave_dados = chave
+                break
+        if chave_dados:
+            break
+    # Se não encontrou, pega a primeira chave válida
+    if not chave_dados:
         for chave, valor in dados_limpos.items():
             if isinstance(valor, np.ndarray) and valor.size > 0:
-                dados_array = valor
+                chave_dados = chave
                 break
         else:
             logger.warning("Não foi possível identificar os dados principais")
             return None
-    
+    dados_array = dados_limpos[chave_dados]
+
     # Converter para DataFrame
     if dados_array.ndim == 1:
         df = pd.DataFrame(dados_array, columns=['valor'])
@@ -57,7 +63,6 @@ def converter_dados_para_dataframe(dados_matlab):
         # Para arrays 3D ou maiores, achatamos para 2D
         dados_reshaped = dados_array.reshape(dados_array.shape[0], -1)
         df = pd.DataFrame(dados_reshaped)
-    
     return df
 
 def converter_arquivo_matlab_para_csv(caminho_entrada, caminho_saida):

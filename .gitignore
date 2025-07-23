@@ -1,9 +1,4 @@
-# Arquivos do sistema
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Arquivos Python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -26,33 +21,34 @@ wheels/
 *.egg
 MANIFEST
 
-# Ambientes virtuais
+# Virtual Environment
 venv/
 env/
 ENV/
-env.bak/
-venv.bak/
 
-# IDEs
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
-logs/
 
-# Arquivos temporários
+# Temporary files
 *.tmp
 *.temp
-.cache/
 
-# Arquivos de dados grandes (opcional - descomente se quiser excluir)
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data files (opcional - descomente se não quiser enviar os dados)
 # dados_matlab/
 # dados_convertidos/
 
-# Arquivos de configuração local
-.env
-.env.local 
+# Arquivos de teste
+*_teste.csv 
